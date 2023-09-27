@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: 'bash -Eeuo pipefail -x {0}'
+
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-22.04
+          - ubuntu-20.04
+    name: Test ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./
+      - run: |
+          docker version
+          sudo ctr version
+          docker run --rm hello-world
+          sudo ctr content fetch docker.io/library/hello-world:latest
+          sudo ctr run --rm docker.io/library/hello-world:latest test
