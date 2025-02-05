@@ -20,6 +20,7 @@ jobs:
       matrix:
         os:
           # https://github.com/actions/runner-images#available-images
+          - ubuntu-24.04
           - ubuntu-22.04
           - ubuntu-20.04
     name: Test ${{ matrix.os }}
